@@ -23,3 +23,14 @@
 /** TODO: Create separate styles for .primary and .secondary variants of this button:
 * - Must use the CSS variables declared in App.css
 */
+
+.button.primary {
+  background-color: var(--color-primary);
+  border: none;
+}
+
+.button.secondary {
+  background-color: #fff;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}

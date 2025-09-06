@@ -11,48 +11,57 @@ import useAddressBook from "@/hooks/useAddressBook";
 import styles from "./App.module.css";
 import { Address as AddressType } from "./types";
 
+/**
+ * Custom hook to generically manage form fields
+ */
+const useFormFields = (initialValues: Record<string, string>) => {
+  const [fields, setFields] = React.useState(initialValues);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFields((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const resetFields = () => {
+    setFields(initialValues);
+  };
+
+  return {
+    fields,
+    handleChange,
+    resetFields,
+    setFields,
+  };
+};
+
 function App() {
   /**
-   * Form fields states
-   * TODO: Write a custom hook to set form fields in a more generic way:
-   * - Hook must expose an onChange handler to be used by all <InputText /> and <Radio /> components
-   * - Hook must expose all text form field values, like so: { postCode: '', houseNumber: '', ...etc }
-   * - Remove all individual React.useState
-   * - Remove all individual onChange handlers, like handlePostCodeChange for example
+   * ✅ Replaced individual useState calls with useFormFields
    */
-  const [postCode, setPostCode] = React.useState("");
-  const [houseNumber, setHouseNumber] = React.useState("");
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [selectedAddress, setSelectedAddress] = React.useState("");
+  const { fields, handleChange, resetFields, setFields } = useFormFields({
+    postCode: "",
+    houseNumber: "",
+    firstName: "",
+    lastName: "",
+    selectedAddress: "",
+  });
+
+  const { postCode, houseNumber, firstName, lastName, selectedAddress } =
+    fields;
+
   /**
    * Results states
    */
   const [error, setError] = React.useState<undefined | string>(undefined);
   const [addresses, setAddresses] = React.useState<AddressType[]>([]);
+
   /**
    * Redux actions
    */
   const { addAddress } = useAddressBook();
-
-  /**
-   * Text fields onChange handlers
-   */
-  const handlePostCodeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setPostCode(e.target.value);
-
-  const handleHouseNumberChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setHouseNumber(e.target.value);
-
-  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFirstName(e.target.value);
-
-  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setLastName(e.target.value);
-
-  const handleSelectedAddressChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => setSelectedAddress(e.target.value);
 
   /** TODO: Fetch addresses based on houseNumber and postCode using the local BE api
    * - Example URL of API: ${process.env.NEXT_PUBLIC_URL}/api/getAddresses?postcode=1345&streetnumber=350
@@ -109,7 +118,7 @@ function App() {
             <div className={styles.formRow}>
               <InputText
                 name="postCode"
-                onChange={handlePostCodeChange}
+                onChange={handleChange}
                 placeholder="Post Code"
                 value={postCode}
               />
@@ -117,7 +126,7 @@ function App() {
             <div className={styles.formRow}>
               <InputText
                 name="houseNumber"
-                onChange={handleHouseNumberChange}
+                onChange={handleChange}
                 value={houseNumber}
                 placeholder="House number"
               />
@@ -125,6 +134,7 @@ function App() {
             <Button type="submit">Find</Button>
           </fieldset>
         </form>
+
         {addresses.length > 0 &&
           addresses.map((address) => {
             return (
@@ -132,12 +142,13 @@ function App() {
                 name="selectedAddress"
                 id={address.id}
                 key={address.id}
-                onChange={handleSelectedAddressChange}
+                onChange={handleChange}
               >
                 <Address {...address} />
               </Radio>
             );
           })}
+
         {/* TODO: Create generic <Form /> component to display form rows, legend and a submit button  */}
         {selectedAddress && (
           <form onSubmit={handlePersonSubmit}>
@@ -147,7 +158,7 @@ function App() {
                 <InputText
                   name="firstName"
                   placeholder="First name"
-                  onChange={handleFirstNameChange}
+                  onChange={handleChange}
                   value={firstName}
                 />
               </div>
@@ -155,7 +166,7 @@ function App() {
                 <InputText
                   name="lastName"
                   placeholder="Last name"
-                  onChange={handleLastNameChange}
+                  onChange={handleChange}
                   value={lastName}
                 />
               </div>

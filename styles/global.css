@@ -1,21 +1,10 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-/* TODO: Add the 'Roboto' font from Google fonts and add it as a global CSS var called `--font-primary` */
-/* TODO: Make application responsive. It is already for the most part, but it is not optimal for smaller screens.
-* - Making the application responsive using the Mobile First principle.
-*/
+/* Import Roboto font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 :root {
+  --font-primary: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  
   --border-radius-default: 4px;
   --border-radius-xl: 15px;
   --color-accent: #cacfdd;
@@ -33,14 +22,49 @@ code {
 }
 
 body {
+  margin: 0;
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   accent-color: var(--color-brand);
   font-size: 18px;
-  font-family: var(--font-primary);
   background: var(--color-accent);
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 main {
   padding: 2rem;
+  max-width: var(--width-content);
+  margin: 0 auto; /* center on larger screens */
+}
+
+/* Responsive adjustments (mobile-first) */
+@media (max-width: 600px) {
+  body {
+    font-size: 16px; /* slightly smaller font */
+  }
+
+  main {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  fieldset {
+    max-width: 100%;
+    padding: 0.5rem 0;
+  }
+
+  /* Adjust input width to be fluid on small screens */
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="password"] {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
 }
 
 small {
